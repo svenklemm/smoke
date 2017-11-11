@@ -5,19 +5,21 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
 func main() {
-	src, err := ioutil.ReadFile("smoke.go")
-	if err != nil {
-		panic(err)
+
+	var file string
+	if len(os.Args) > 1 {
+		file = os.Args[1]
+	} else {
+		file = "smoke.go"
 	}
 
-	// Create the AST by parsing src.
 	fset := token.NewFileSet() // positions are relative to fset
-	f, err := parser.ParseFile(fset, "", src, 0)
+	f, err := parser.ParseFile(fset, file, nil, 0)
 	if err != nil {
 		panic(err)
 	}
