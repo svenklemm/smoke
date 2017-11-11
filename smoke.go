@@ -11,26 +11,27 @@ import (
 
 func main() {
 
-	var file string
+	dir := "."
 	if len(os.Args) > 1 {
-		file = os.Args[1]
-	} else {
-		file = "smoke.go"
+		dir = os.Args[1]
 	}
 
 	fset := token.NewFileSet() // positions are relative to fset
-	f, err := parser.ParseFile(fset, file, nil, 0)
+	f, err := parser.ParseDir(fset, dir, nil, 0)
 	if err != nil {
 		panic(err)
 	}
 
-	ast.Inspect(f, func(n ast.Node) bool {
-		switch x := n.(type) {
-		case *ast.CallExpr:
-			checkCall(x)
-		}
-		return true
-	})
+	for pkg, tree := range f {
+		fmt.Printf("\nPACKAGE: %s\n\n", pkg)
+		ast.Inspect(tree, func(n ast.Node) bool {
+			switch x := n.(type) {
+			case *ast.CallExpr:
+				checkCall(x)
+			}
+			return true
+		})
+	}
 
 }
 
