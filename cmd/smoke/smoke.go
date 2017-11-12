@@ -9,9 +9,11 @@ import (
 	"strings"
 )
 
+var targets = []string{"fmt.Printf"}
+
 func main() {
 
-	dir := "."
+	dir := "pkg/snippets"
 	if len(os.Args) > 1 {
 		dir = os.Args[1]
 	}
@@ -64,7 +66,12 @@ func getFunctionName(n ast.Expr) string {
 
 func checkCall(n *ast.CallExpr) {
 	func_name := getFunctionName(n.Fun)
-	fmt.Printf("Call: %s %t\n", func_name, n.Args)
-	//fmt.Printf("Function Call\nName: %T\nArgs: %t\n\n", n.Fun, n.Args)
 
+	for _, f := range targets {
+		if f == func_name {
+			fmt.Printf("Call: %s %t\n", func_name, n.Args)
+		} else {
+			fmt.Printf("Call: %s %t\n", func_name, n.Args)
+		}
+	}
 }
